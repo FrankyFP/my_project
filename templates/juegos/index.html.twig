@@ -7,11 +7,15 @@
     
     <a href="{{ path('app_juegos_new') }}">Crear nuevo juego</a>
 
-    <table border="1" cellpadding="10" style="margin-top: 15px;">
+    <table border="1" cellpadding="10" style="margin-top: 15px; border-collapse: collapse;">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Nombre</th>
+                <th>Plataforma</th>
+                <th>Descripción</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -19,12 +23,15 @@
         {% for juego in juegos %}
             <tr>
                 <td>{{ juego.id }}</td>
-                {# ¡Asegúrate de que getNombre() exista en tu entidad! #}
+                {# Symfony usa los "getters" (getNombre, getPrecio...) automáticamente #}
                 <td>{{ juego.nombre }}</td>
+                <td>{{ juego.plataforma }}</td>
+                <td>{{ juego.description }}</td>
+                <td>{{ juego.precio }} €</td>
+                <td>{{ juego.cantidad }} uds.</td>
                 <td>
                     <a href="{{ path('app_juegos_edit', {'id': juego.id}) }}">Editar</a>
                     
-                    {# Formulario para borrar por seguridad #}
                     <form method="post" action="{{ path('app_juegos_delete', {'id': juego.id}) }}" style="display:inline-block;" onsubmit="return confirm('¿Seguro que quieres borrarlo?');">
                         <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ juego.id) }}">
                         <button type="submit">Borrar</button>
@@ -33,7 +40,7 @@
             </tr>
         {% else %}
             <tr>
-                <td colspan="3">No hay juegos guardados.</td>
+                <td colspan="7">No hay juegos guardados todavía.</td>
             </tr>
         {% endfor %}
         </tbody>

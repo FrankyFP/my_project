@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Minecraft index{% endblock %}
+
+{% block body %}
+    <h1>Minecraft index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Version</th>
+                <th>Plataforma</th>
+                <th>Gamemode</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for minecraft in minecrafts %}
+            <tr>
+                <td>{{ minecraft.id }}</td>
+                <td>{{ minecraft.version }}</td>
+                <td>{{ minecraft.Plataforma }}</td>
+                <td>{{ minecraft.gamemode }}</td>
+                <td>
+                    <a href="{{ path('app_minecraft_show', {'id': minecraft.id}) }}">show</a>
+                    <a href="{{ path('app_minecraft_edit', {'id': minecraft.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_minecraft_new') }}">Create new</a>
+{% endblock %}
