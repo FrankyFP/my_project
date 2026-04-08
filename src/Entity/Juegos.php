@@ -25,6 +25,9 @@ class Juegos
     #[ORM\Column(length: 255)]
     private ?string $Plataforma = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $nombre = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +77,18 @@ class Juegos
     public function setPlataforma(string $Plataforma): static
     {
         $this->Plataforma = $Plataforma;
+
+        return $this;
+    }
+
+    public function getNombre(): ?string
+    {
+        return $this->nombre;
+    }
+
+    public function setNombre(string $nombre): static
+    {
+        $this->nombre = $nombre;
 
         return $this;
     }

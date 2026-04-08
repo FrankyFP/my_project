@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Editar Juego{% endblock %}
+
+{% block body %}
+    <h1>Editar {{ juego.nombre }}</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+    {{ form_end(form) }}
+
+    <br>
+    <a href="{{ path('app_juegos_index') }}">Volver a la lista</a>
+{% endblock %}

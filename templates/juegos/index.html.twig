@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista de Juegos{% endblock %}
+
+{% block body %}
+    <h1>Mis Juegos</h1>
+    
+    <a href="{{ path('app_juegos_new') }}">Crear nuevo juego</a>
+
+    <table border="1" cellpadding="10" style="margin-top: 15px;">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for juego in juegos %}
+            <tr>
+                <td>{{ juego.id }}</td>
+                {# ¡Asegúrate de que getNombre() exista en tu entidad! #}
+                <td>{{ juego.nombre }}</td>
+                <td>
+                    <a href="{{ path('app_juegos_edit', {'id': juego.id}) }}">Editar</a>
+                    
+                    {# Formulario para borrar por seguridad #}
+                    <form method="post" action="{{ path('app_juegos_delete', {'id': juego.id}) }}" style="display:inline-block;" onsubmit="return confirm('¿Seguro que quieres borrarlo?');">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ juego.id) }}">
+                        <button type="submit">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">No hay juegos guardados.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
