@@ -1,18 +1,65 @@
 <?php
 
-namespace App\Controller;
+namespace App\Entity;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\HistorialMovimientoRepository;
+use Doctrine\ORM\Mapping as ORM;
 
-final class Controller extends AbstractController
+#[ORM\Entity(repositoryClass: HistorialMovimientoRepository::class)]
+class HistorialMovimiento
 {
-    #[Route('/', name: 'app_')]
-    public function index(): Response
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column]
+    private ?int $id = null;
+
+    #[ORM\Column]
+    private ?int $cantidadCambiada = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $fecha = null;
+
+    #[ORM\ManyToOne(inversedBy: 'historialMovimientos')]
+    private ?Producto $producto = null;
+
+    public function getId(): ?int
     {
-        return $this->render('/index.html.twig', [
-            'controller_name' => 'Controller',
-        ]);
+        return $this->id;
+    }
+
+    public function getCantidadCambiada(): ?int
+    {
+        return $this->cantidadCambiada;
+    }
+
+    public function setCantidadCambiada(int $cantidadCambiada): static
+    {
+        $this->cantidadCambiada = $cantidadCambiada;
+
+        return $this;
+    }
+
+    public function getFecha(): ?\DateTimeImmutable
+    {
+        return $this->fecha;
+    }
+
+    public function setFecha(\DateTimeImmutable $fecha): static
+    {
+        $this->fecha = $fecha;
+
+        return $this;
+    }
+
+    public function getProducto(): ?Producto
+    {
+        return $this->producto;
+    }
+
+    public function setProducto(?Producto $producto): static
+    {
+        $this->producto = $producto;
+
+        return $this;
     }
 }

@@ -1,20 +1,46 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
-
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="container mt-4">
+    <h1>Dashboard del Almacén</h1>
+    
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card text-bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total de Artículos</h5>
+                    <h2 class="card-text">{{ total_articulos }} unidades</h2>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>C:/Users/raula/OneDrive/Desktop/Proyectos-Practicas/Symfony/my_project/src/Controller/HomeController.php</code></li>
-        <li>Your template at <code>C:/Users/raula/OneDrive/Desktop/Proyectos-Practicas/Symfony/my_project/templates/home/index.html.twig</code></li>
-    </ul>
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <h3>⚠️ Alerta de Stock (Top 5)</h3>
+            <ul class="list-group">
+                {% for prod in productos_bajos %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ prod.nombre }}
+                        <span class="badge {{ prod.cantidad == 0 ? 'bg-danger' : 'bg-warning' }} rounded-pill">
+                            {{ prod.cantidad }}
+                        </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h3>🔄 Últimos movimientos</h3>
+            <ul class="list-group">
+                {% for mov in ultimos_movimientos %}
+                    <li class="list-group-item text-muted">
+                        <strong>{{ mov.producto.nombre }}</strong>: 
+                        <span class="text-success">+{{ mov.cantidadCambiada }}</span> 
+                        <small class="float-end">{{ mov.fecha|date('d/m H:i') }}</small>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
 </div>
 {% endblock %}

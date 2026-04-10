@@ -62,25 +62,39 @@
     {# Script para la llamada AJAX #}
     <script>
         document.querySelectorAll('.btn-reposicion').forEach(button => {
-            button.addEventListener('click', function() {
-                const productoId = this.getAttribute('data-id');
-                
-                fetch(`/producto/${productoId}/reposicion`, {
-                    method: 'POST',
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    // Actualizamos el número de la cantidad en la tabla
-                    const cantTd = document.getElementById('cantidad-' + productoId);
-                    cantTd.innerHTML = `<strong>${data.nueva_cantidad}</strong>`;
-                    
-                    // Opcional: Recargar la página si quieres que los colores de Bootstrap se actualicen fácil, 
-                    // o podrías hacerlo por JS cambiando las clases 'table-danger', 'table-warning', etc.
-                    window.location.reload(); 
-                })
-                .catch(error => console.error('Error:', error));
-            });
-        });
+    button.addEventListener('click', function() {
+        const productoId = this.getAttribute('data-id');
+        
+        fetch(`/producto/${productoId}/reposicion`, {
+            method: 'POST',
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const nuevaCantidad = data.nueva_cantidad;
+            
+            // 1. Actualizar el número
+            document.getElementById('cantidad-' + productoId).innerHTML = `<strong>${nuevaCantidad}</strong>`;
+            
+            // 2. Actualizar la fila y los colores dinámicamente
+            const fila = document.getElementById('fila-producto-' + productoId);
+            const estadoTd = document.getElementById('estado-' + productoId);
+            
+            // Limpiamos las clases previas de la fila
+            fila.classList.remove('table-danger', 'text-danger', 'table-warning', 'text-warning');
+            
+            if (nuevaCantidad == 0) {
+                fila.classList.add('table-danger', 'text-danger');
+                estadoTd.innerHTML = '<span class="badge bg-danger">Agotado</span>';
+            } else if (nuevaCantidad >= 1 && nuevaCantidad <= 5) {
+                fila.classList.add('table-warning', 'text-warning');
+                estadoTd.innerHTML = '<span class="badge bg-warning text-dark">Últimas unidades</span>';
+            } else {
+                estadoTd.innerHTML = '<span class="badge bg-success">Stock ok</span>';
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+});
     </script>
 {% endblock %}
