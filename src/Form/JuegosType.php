@@ -5,7 +5,7 @@ namespace App\Form;
 use App\Entity\Juegos;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType; // Importante para Precio y Cantidad
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,7 +15,6 @@ class JuegosType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            // Añadimos exactamente las propiedades de tu entidad Juegos.php
             ->add('nombre', TextType::class, [
                 'label' => 'Nombre del Juego'
             ])

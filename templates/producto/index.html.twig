@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista de Productos{% endblock %}
+
+{% block body %}
+    <h1>Inventario de Productos</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Cantidad</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for producto in productos %}
+            {# Lógica de colores en la fila #}
+            {% set row_class = '' %}
+            {% if producto.cantidad == 0 %}
+                {% set row_class = 'table-danger text-danger' %}
+            {% elseif producto.cantidad >= 1 and producto.cantidad <= 5 %}
+                {% set row_class = 'table-warning text-warning' %}
+            {% endif %}
+
+            <tr class="{{ row_class }}" id="fila-producto-{{ producto.id }}">
+                <td>{{ producto.nombre }}</td>
+                <td>{{ producto.categoria ? producto.categoria.nombre : 'Sin categoría' }}</td>
+                
+                <td id="cantidad-{{ producto.id }}"><strong>{{ producto.cantidad }}</strong></td>
+                
+                <td id="estado-{{ producto.id }}">
+                    {# Columna de Estado #}
+                    {% if producto.cantidad == 0 %}
+                        <span class="badge bg-danger">Agotado</span>
+                    {% elseif producto.cantidad >= 1 and producto.cantidad <= 5 %}
+                        <span class="badge bg-warning text-dark">Últimas unidades</span>
+                    {% else %}
+                        <span class="badge bg-success">Stock ok</span>
+                    {% endif %}
+                </td>
+                
+                <td>
+                    <a href="{{ path('app_producto_show', {'id': producto.id}) }}">Ver</a>
+                    <a href="{{ path('app_producto_edit', {'id': producto.id}) }}">Editar</a>
+                    {# Botón de Reposición Rápida #}
+                    <button class="btn btn-sm btn-success btn-reposicion" data-id="{{ producto.id }}">+1 Reponer</button>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="5">No hay productos en el inventario.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_producto_new') }}">Crear nuevo</a>
+
+    {# Script para la llamada AJAX #}
+    <script>
+        document.querySelectorAll('.btn-reposicion').forEach(button => {
+            button.addEventListener('click', function() {
+                const productoId = this.getAttribute('data-id');
+                
+                fetch(`/producto/${productoId}/reposicion`, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Actualizamos el número de la cantidad en la tabla
+                    const cantTd = document.getElementById('cantidad-' + productoId);
+                    cantTd.innerHTML = `<strong>${data.nueva_cantidad}</strong>`;
+                    
+                    // Opcional: Recargar la página si quieres que los colores de Bootstrap se actualicen fácil, 
+                    // o podrías hacerlo por JS cambiando las clases 'table-danger', 'table-warning', etc.
+                    window.location.reload(); 
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    </script>
+{% endblock %}
