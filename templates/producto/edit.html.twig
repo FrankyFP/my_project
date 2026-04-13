@@ -1,13 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Producto{% endblock %}
+{% block title %}Editar Producto{% endblock %}
 
 {% block body %}
-    <h1>Edit Producto</h1>
+    <h1>Editar Producto</h1>
 
-    {{ include('producto/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('producto/_form.html.twig', {'button_label': 'Actualizar'}) }}
 
-    <a href="{{ path('app_producto_index') }}">back to list</a>
-
-    {{ include('producto/_delete_form.html.twig') }}
+    <div class="mt-4 d-flex gap-2">
+        <a class="btn btn-secondary" href="{{ path('app_producto_index') }}"> Volver a la lista</a>
+        
+        {% if is_granted('ROLE_ADMIN') %}
+            {{ include('producto/_delete_form.html.twig') }}
+        {% endif %}
+    </div>
 {% endblock %}
