@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\HistorialMovimiento;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/producto')]
 final class ProductoController extends AbstractController
@@ -70,6 +71,8 @@ final class ProductoController extends AbstractController
         ]);
     }
 
+    // 2. BLOQUEAR EL BORRADO SOLO A ADMINS
+    #[IsGranted('ROLE_ADMIN')]
     #[Route('/{id}', name: 'app_producto_delete', methods: ['POST'])]
     public function delete(Request $request, Producto $producto, EntityManagerInterface $entityManager): Response
     {
@@ -81,6 +84,7 @@ final class ProductoController extends AbstractController
         return $this->redirectToRoute('app_producto_index', [], Response::HTTP_SEE_OTHER);
     }
 
+    // 1. AÑADIR EL USUARIO AL HISTORIAL
     #[Route('/{id}/reposicion', name: 'app_producto_reposicion', methods: ['POST'])]
     public function reposicion(Producto $producto, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -90,6 +94,9 @@ final class ProductoController extends AbstractController
         $historial->setProducto($producto);
         $historial->setCantidadCambiada(1);
         $historial->setFecha(new \DateTimeImmutable());
+        
+        // ¡Magia! Obtenemos el usuario logueado y lo guardamos
+        $historial->setUsuario($this->getUser());
 
         $entityManager->persist($historial);
         $entityManager->flush();

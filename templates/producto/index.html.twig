@@ -43,9 +43,13 @@
                 </td>
                 
                 <td>
-                    <a href="{{ path('app_producto_show', {'id': producto.id}) }}">Ver</a>
-                    <a href="{{ path('app_producto_edit', {'id': producto.id}) }}">Editar</a>
-                    {# Botón de Reposición Rápida #}
+                    <a href="{{ path('app_producto_show', {'id': producto.id}) }}" class="btn btn-sm btn-info">Ver</a>
+                    <a href="{{ path('app_producto_edit', {'id': producto.id}) }}" class="btn btn-sm btn-secondary">Editar</a>
+        
+                    {% if is_granted('ROLE_ADMIN') %}
+                    {{ include('producto/_delete_form.html.twig') }}
+                    {% endif %}
+        
                     <button class="btn btn-sm btn-success btn-reposicion" data-id="{{ producto.id }}">+1 Reponer</button>
                 </td>
             </tr>

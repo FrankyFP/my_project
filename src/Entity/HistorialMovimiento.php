@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\HistorialMovimientoRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\User;
 
 #[ORM\Entity(repositoryClass: HistorialMovimientoRepository::class)]
 class HistorialMovimiento
@@ -21,6 +22,9 @@ class HistorialMovimiento
 
     #[ORM\ManyToOne(inversedBy: 'historialMovimientos')]
     private ?Producto $producto = null;
+
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    private ?User $usuario = null;
 
     public function getId(): ?int
     {
@@ -59,6 +63,18 @@ class HistorialMovimiento
     public function setProducto(?Producto $producto): static
     {
         $this->producto = $producto;
+
+        return $this;
+    }
+
+    public function getUsuario(): ?User
+    {
+        return $this->usuario;
+    }
+
+    public function setUsuario(?User $usuario): static
+    {
+        $this->usuario = $usuario;
 
         return $this;
     }

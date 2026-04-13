@@ -36,8 +36,12 @@ security:
 
     # Note: Only the *first* matching rule is applied
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        # Dejamos pasar a cualquiera a login y registro
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+        
+        # Bloqueamos el resto de la web. Solo entran usuarios logueados.
+        - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:

@@ -19,6 +19,12 @@
         {% endif %}
     </head>
     <body>
+        {% if app.user %}
+        <div style="background: #eee; padding: 10px; margin-bottom: 20px;">
+            Conectado como: <strong>{{ app.user.email }}</strong> 
+            | <a href="{{ path('app_logout') }}">Cerrar sesión</a>
+        </div>
+        {% endif %}
         {% block body %}{% endblock %}
     </body>
 </html>

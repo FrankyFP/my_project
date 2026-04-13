@@ -17,15 +17,19 @@
             </tr>
         </thead>
         <tbody>
-            {# Asumiendo que al crear la relación le pusiste getHistorialMovimientos() #}
+            <ul>
             {% for movimiento in producto.historialMovimientos|sort((a, b) => b.fecha <=> a.fecha) %}
-                <tr>
-                    <td>{{ movimiento.fecha|date('d/m/Y H:i:s') }}</td>
-                    <td class="text-success">+{{ movimiento.cantidadCambiada }} uds.</td>
-                </tr>
+            <li>
+                {{ movimiento.fecha|date('d/m/Y H:i') }} | 
+                <span class="text-success">+{{ movimiento.cantidadCambiada }} uds.</span>
+                <small class="text-muted">
+                    (Hecho por: {{ movimiento.usuario ? movimiento.usuario.email : 'Sistema' }})
+                </small>
+            </li>
             {% else %}
-                <tr><td colspan="2">No hay movimientos registrados.</td></tr>
+                <li>No hay movimientos registrados.</li>
             {% endfor %}
+            </ul>
         </tbody>
     </table>
 {% endblock %}
