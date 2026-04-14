@@ -12,25 +12,26 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_inicio')]
     public function index(ProductoRepository $productoRepo, HistorialMovimientoRepository $historialRepo): Response
     {
-        // 1. Total de artículos en stock
         $totalArticulos = $productoRepo->createQueryBuilder('p')
             ->select('SUM(p.cantidad)')
             ->getQuery()
-            ->getSingleScalarResult() ?? 0;
+            ->getSingleScalarResult();
 
-        // 2. Los 5 productos con menos existencias
-        $productosBajos = $productoRepo->findBy(
-            [], // sin filtros
-            ['cantidad' => 'ASC'], // Ordenados de menor a mayor
-            5 // Límite de 5
-        );
+        $productosBajos = $productoRepo->createQueryBuilder('p')
+            ->andWhere('p.cantidad <= :limite')
+            ->setParameter('limite', 5)
+            ->orderBy('p.cantidad', 'ASC')
+            ->setMaxResults(5)
+            ->getQuery()
+            ->getResult();
 
-        // 3. Los últimos movimientos del almacén
-        $ultimosMovimientos = $historialRepo->findBy(
-            [],
-            ['fecha' => 'DESC'], // Los más recientes primero
-            10 // Mostrar los últimos 10
-        );
+        $ultimosMovimientos = $historialRepo->findBy([], ['fecha' => 'DESC'], 10);
+
+        return $this->render('home/index.html.twig', [
+            'total_articulos' => $totalArticulos ?? 0,
+            'productos_bajos' => $productosBajos, // Asegúrate de que el nombre coincide con tu Twig
+            'ultimos_movimientos' => $ultimosMovimientos,
+        ]);
 
         return $this->render('home/index.html.twig', [
             'total_articulos' => $totalArticulos,
