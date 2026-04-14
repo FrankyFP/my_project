@@ -17,26 +17,26 @@
 
     <div class="row mt-4">
         <div class="col-md-6">
-            <h3 class="text-danger">⚠️ Alertas de Stock</h3>
+            <h3 class="text-danger">Alertas de Stock</h3>
             <ul class="list-group">
                 {% for prod in productos_bajos %}
                     
-                    {# Usamos bg-danger (rojo fuerte) o bg-warning (amarillo fuerte) #}
-                    <li class="list-group-item d-flex justify-content-between align-items-center {{ prod.cantidad == 0 ? 'bg-danger text-white' : 'bg-warning text-dark' }}">
+                    <li class="list-group-item d-flex justify-content-between align-items-center" 
+                        style="background-color: {{ prod.cantidad == 0 ? '#ffcccc' : '#fff3cd' }}; color: {{ prod.cantidad == 0 ? '#842029' : '#664d03' }};">
                         
                         <span class="fw-bold">{{ prod.nombre }}</span>
                         
                         {% if prod.cantidad == 0 %}
-                            <span class="badge bg-light text-danger rounded-pill">Agotado (0)</span>
+                            <span class="badge bg-danger rounded-pill">Agotado (0)</span>
                         {% else %}
-                            <span class="badge bg-light text-warning rounded-pill">Últimas uds. ({{ prod.cantidad }})</span>
+                            <span class="badge bg-warning text-dark rounded-pill">Últimas uds. ({{ prod.cantidad }})</span>
                         {% endif %}
                         
                     </li>
                     
                 {% else %}
-                    <li class="list-group-item bg-success text-white text-center">
-                        <strong>¡Stock OK! 🎉</strong> <br> Ningún producto está en peligro.
+                    <li class="list-group-item text-center" style="background-color: #d1e7dd; color: #0f5132;">
+                        <strong>Stock OK</strong> <br> Ningún producto está en peligro.
                     </li>
                 {% endfor %}
             </ul>
