@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\HistorialMovimiento;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\InventoryManager;
 
 #[Route('/producto')]
 final class ProductoController extends AbstractController
@@ -104,5 +105,40 @@ final class ProductoController extends AbstractController
         return $this->json([
             'nueva_cantidad' => $producto->getCantidad()
         ]);
+    }
+
+    #[Route('/api/producto/list', name: 'api_producto_index', methods: ['GET'])]
+    public function indexJson(ProductoRepository $repo): JsonResponse
+    {
+        $productos = $repo->findAll();
+        $data = array_map(fn($p) => [
+            'id' => $p->getId(),
+            'nombre' => $p->getNombre(),
+            'cantidad' => $p->getCantidad(),
+            'categoria' => $p->getCategoria()?->getNombre()
+        ], $productos);
+
+        return $this->json($data);
+    }
+
+    #[Route('/api/producto/{id}/reposicion', name: 'api_producto_reposicion', methods: ['POST'])]
+    public function reposicionApi(
+        Producto $producto,
+        InventoryManager $inventoryManager
+    ): JsonResponse {
+        try {
+            $nuevaCantidad = $inventoryManager->reposicion($producto, $this->getUser());
+
+            return $this->json([
+                'status' => 'success',
+                'message' => 'Stock actualizado correctamente',
+                'nueva_cantidad' => $nuevaCantidad
+            ]);
+        } catch (\Exception $e) {
+            return $this->json([
+                'status' => 'error',
+                'message' => 'No se pudo actualizar el stock'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
